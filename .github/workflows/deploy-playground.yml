@@ -10,6 +10,8 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  # 允许使用自动生成的 GITHUB_TOKEN 拉取组织私有包（GitHub Packages）
+  packages: read
 
 # 同一时间只允许一个部署在进行，跳过队列中并发的运行
 concurrency:
@@ -19,6 +21,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # npm 认证 token：优先使用显式配置的 NPM_TOKEN（PAT），
+      # 未配置时回退到自动生成的 GITHUB_TOKEN，供 .npmrc 使用。
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN || secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
