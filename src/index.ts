@@ -3,7 +3,7 @@ import VirtualMachine from "@open-ccw/scratch-vm";
 import { setCCWApi } from "@open-ccw/gandi-ccw-api";
 import Storage from "@open-ccw/scratch-storage";
 import { decrypt } from "./decryptSb3";
-import entry from "@open-ccw/custom-extension";
+import { LoadOfficialExtEntry } from "./extensionsEntry";
 
 /** RenderedTarget 上存在、但基类 Target 类型缺失的属性。 */
 interface DraggableTarget {
@@ -14,11 +14,22 @@ interface DraggableTarget {
   goToFront(): void;
 }
 
-export function init(canvas: HTMLCanvasElement) {
+export async function init(
+  canvas: HTMLCanvasElement,
+  onQuestion: (q: any) => any,
+) {
   const renderer = new RenderWebGL(canvas);
   const vm = new VirtualMachine();
   const storage = new Storage();
+  vm.start();
+  vm.setInEditor(false);
+  vm.setIsPlayerOnly(true);
   vm.attachRenderer(renderer);
+  // 有些扩展会通过这个获取vm
+  const onQuestion_ = function (q: any) {
+    return onQuestion.apply({ props: { vm: vm } }, q);
+  };
+  vm.runtime.addListener("QUESTION", onQuestion_);
   setCCWApi(vm, {
     userInfo: {
       avatar: "a",
@@ -31,6 +42,7 @@ export function init(canvas: HTMLCanvasElement) {
       userName: "no",
       uuid: "no",
       pendant: "0",
+      userId: "244373873",
     },
     async getExtUrl(id) {
       debugger;
@@ -38,33 +50,41 @@ export function init(canvas: HTMLCanvasElement) {
     },
   });
   vm.attachStorage(storage);
+  const entry = await LoadOfficialExtEntry();
   Object.keys(entry).forEach((k) => {
-    vm.runtime.extensionManager.addOfficialExtensionInfo(entry[k]);
+    vm.runtime.extensionManager!.addOfficialExtensionInfo(entry[k]);
   });
+
+  console.groupEnd();
   const { AssetType } = storage;
   storage.addWebStore(
-    [AssetType.ImageVector, AssetType.ImageBitmap, AssetType.Sound],
+    [
+      AssetType.ImageVector,
+      AssetType.ImageBitmap,
+      AssetType.Sound,
+      AssetType.GLSL,
+      AssetType.Json,
+    ],
     (asset) => {
       return `https://m.ccw.site/user_projects_assets/${asset.assetId}.${asset.dataFormat}`;
     },
     null,
     null,
   );
-  vm.start();
   attachMouse(canvas, renderer, vm);
-  attachKeyboard(vm);
+  attachKeyboard(canvas, vm);
   return { vm };
 }
 
-function attachKeyboard(vm: VirtualMachine) {
+function attachKeyboard(canvas: HTMLCanvasElement, vm: VirtualMachine) {
   // Feed keyboard events as VM I/O events.
-  document.addEventListener("keydown", (e) => {
+  canvas.addEventListener("keydown", (e) => {
     if (e.repeat) return;
     console.info(e);
     vm.postIOData("keyboard", { key: e.key, isDown: true });
     e.preventDefault();
   });
-  document.addEventListener("keyup", (e) => {
+  canvas.addEventListener("keyup", (e) => {
     vm.postIOData("keyboard", { key: e.key, isDown: false });
   });
 }
@@ -210,8 +230,17 @@ function attachMouse(
 }
 
 export async function loadProjectURL(sb3Url: URL, vm: VirtualMachine) {
+  vm.clear();
   sb3Url.searchParams.set("t", Date.now().toString());
   const response = await fetch(sb3Url).then((res) => res.arrayBuffer());
   const decrypted = await decrypt(response, sb3Url.pathname.split("/").at(-1)!);
-  return vm.loadProject(decrypted);
+  return vm.loadProject(decrypted, undefined, {
+    confirmExtensionsCallBack(info) {
+      confirm(JSON.stringify(info));
+      return Promise.resolve(true);
+    },
+    extractProperties: {
+      shouldMarkLockDeleteAbility: true,
+    },
+  });
 }

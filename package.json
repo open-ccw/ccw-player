@@ -16,15 +16,15 @@
     "@ccw-api/api": "^2.0.0",
     "@ccw-api/request": "^1.2.2",
     "@types/crypto-js": "^4.2.2",
+    "@types/node": "^26.2.0",
     "tsdown": "^0.22.14",
     "vite": "^8.2.1"
   },
   "dependencies": {
-    "@open-ccw/custom-extension": "^0.0.3",
     "@open-ccw/gandi-ccw-api": "^0.0.5",
     "@open-ccw/scratch-render": "^9.9.16",
     "@open-ccw/scratch-storage": "^9.9.11",
-    "@open-ccw/scratch-vm": "^9.9.13",
+    "@open-ccw/scratch-vm": "^9.9.15",
     "crypto-js": "^4.1.1",
     "jszip": "^3.10.1"
   }
