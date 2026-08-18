@@ -1,0 +1,1 @@
+var e=function(){let e=[];for(let t=0;t<20;t++)e[t]="!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.random()*87);return e.join(``)};export{e as t};
