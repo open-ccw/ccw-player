@@ -6,7 +6,12 @@
     <title>Playground</title>
     <script src="./src/playground.ts" type="module"></script>
     <style>
-      canvas {
+      #root {
+        resize: both;
+        width: 640px;
+        height: 360px;
+        display: flex;
+        overflow: hidden;
         border: 1px solid black;
       }
     </style>
@@ -15,5 +20,6 @@
     <div id="root"></div>
     <input id="oid" value="69740f1a61b891733d5ee2c6" />
     <button id="start">start</button>
+    <progress id="progress"></progress>
   </body>
 </html>

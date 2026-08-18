@@ -24,7 +24,7 @@
     "@open-ccw/gandi-ccw-api": "^0.0.5",
     "@open-ccw/scratch-render": "^9.9.16",
     "@open-ccw/scratch-storage": "^9.9.11",
-    "@open-ccw/scratch-vm": "^9.9.15",
+    "@open-ccw/scratch-vm": "^9.9.17",
     "crypto-js": "^4.1.1",
     "jszip": "^3.10.1"
   }

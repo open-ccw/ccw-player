@@ -1,5 +1,5 @@
 import { RenderWebGL } from "@open-ccw/scratch-render";
-import VirtualMachine from "@open-ccw/scratch-vm";
+import VirtualMachine, { Runtime } from "@open-ccw/scratch-vm";
 import { setCCWApi } from "@open-ccw/gandi-ccw-api";
 import Storage from "@open-ccw/scratch-storage";
 import { decrypt } from "./decryptSb3";
@@ -73,6 +73,9 @@ export async function init(
   );
   attachMouse(canvas, renderer, vm);
   attachKeyboard(canvas, vm);
+  vm.runtime.on(Runtime.MONITORS_UPDATE, (state) => {
+    console.log(state);
+  });
   return { vm };
 }
 
@@ -243,4 +246,11 @@ export async function loadProjectURL(sb3Url: URL, vm: VirtualMachine) {
       shouldMarkLockDeleteAbility: true,
     },
   });
+}
+
+export function updateStageSize(vm: VirtualMachine, w: number, h: number) {
+  vm.runtime.stageWidth = w;
+  vm.runtime.stageHeight = h;
+  vm.runtime.renderer?.setStageSize(-w / 2, w / 2, -h / 2, h / 2);
+  vm.runtime.renderer?.resize(w, h);
 }
