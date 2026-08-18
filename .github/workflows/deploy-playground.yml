@@ -7,8 +7,7 @@ on:
 
 # 允许 Pages 工作流为每次推送自动构建
 permissions:
-  contents: read
-  pages: write
+  contents: write
   id-token: write
   # 允许使用自动生成的 GITHUB_TOKEN 拉取组织私有包（GitHub Packages）
   packages: read
