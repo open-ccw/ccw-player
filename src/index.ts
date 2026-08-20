@@ -3,6 +3,7 @@ import VirtualMachine, { Runtime } from "@open-ccw/scratch-vm";
 import Storage from "@open-ccw/scratch-storage";
 import { decrypt } from "./decryptSb3";
 import { LoadOfficialExtEntry } from "./extensionsEntry";
+export { ccwApi } from "./ccwApi";
 
 /** RenderedTarget 上存在、但基类 Target 类型缺失的属性。 */
 interface DraggableTarget {
@@ -34,8 +35,6 @@ export async function init(
   Object.keys(entry).forEach((k) => {
     vm.runtime.extensionManager!.addOfficialExtensionInfo(entry[k]);
   });
-
-  console.groupEnd();
   const { AssetType } = storage;
   storage.addWebStore(
     [
