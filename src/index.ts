@@ -1,6 +1,5 @@
 import { RenderWebGL } from "@open-ccw/scratch-render";
 import VirtualMachine, { Runtime } from "@open-ccw/scratch-vm";
-import { setCCWApi } from "@open-ccw/gandi-ccw-api";
 import Storage from "@open-ccw/scratch-storage";
 import { decrypt } from "./decryptSb3";
 import { LoadOfficialExtEntry } from "./extensionsEntry";
@@ -30,25 +29,6 @@ export async function init(
     return onQuestion.apply({ props: { vm: vm } }, q);
   };
   vm.runtime.addListener("QUESTION", onQuestion_);
-  setCCWApi(vm, {
-    userInfo: {
-      avatar: "a",
-      constellation: 0,
-      followers: 0,
-      following: 0,
-      gender: 0,
-      liked: 0,
-      oid: "no",
-      userName: "no",
-      uuid: "no",
-      pendant: "0",
-      userId: "244373873",
-    },
-    async getExtUrl(id) {
-      debugger;
-      return id;
-    },
-  });
   vm.attachStorage(storage);
   const entry = await LoadOfficialExtEntry();
   Object.keys(entry).forEach((k) => {
@@ -232,15 +212,20 @@ function attachMouse(
   new MouseDragHandler(canvas, renderer, vm).attach();
 }
 
-export async function loadProjectURL(sb3Url: URL, vm: VirtualMachine) {
+export async function loadProjectURL(
+  sb3Url: URL,
+  vm: VirtualMachine,
+  confirm: (
+    args: { id: string; url?: string }[],
+  ) => Promise<[true, { id: string; url: string }[]] | [false, null]>,
+) {
   vm.clear();
   sb3Url.searchParams.set("t", Date.now().toString());
   const response = await fetch(sb3Url).then((res) => res.arrayBuffer());
   const decrypted = await decrypt(response, sb3Url.pathname.split("/").at(-1)!);
   return vm.loadProject(decrypted, undefined, {
     confirmExtensionsCallBack(info) {
-      confirm(JSON.stringify(info));
-      return Promise.resolve(true);
+      return Promise.resolve(confirm(info));
     },
     extractProperties: {
       shouldMarkLockDeleteAbility: true,

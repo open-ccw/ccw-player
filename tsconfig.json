@@ -4,5 +4,5 @@
     "moduleResolution": "bundler",
     "module": "esnext"
   },
-  "include": ["src", "types/global.d.ts"]
+  "include": ["src", "types/global.d.ts", "playground"]
 }
