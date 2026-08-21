@@ -1,6 +1,6 @@
 {
   "name": "@open-ccw/player",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "CCW sb3 Project Player",
   "license": "MIT",
   "author": "MengFuzi",
@@ -24,7 +24,7 @@
     "vite-plugin-dts": "^5.0.3"
   },
   "dependencies": {
-    "@open-ccw/scratch-render": "^9.9.18",
+    "@open-ccw/scratch-render": "^9.9.19",
     "@open-ccw/scratch-storage": "^9.9.12",
     "@open-ccw/scratch-vm": "^9.9.18",
     "crypto-js": "^4.2.0",
