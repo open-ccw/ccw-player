@@ -12,4 +12,7 @@ export default defineConfig(({ command }) => ({
       },
     },
   },
+  server: {
+    host: "playground.player.localhost",
+  },
 }));
